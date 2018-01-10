@@ -1,35 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
+using LightGive;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using TMPro.EditorUtilities;
 #endif
 
 /// <summary>
 /// デバッグ関係をまとめたマネージャー
 /// </summary>
-public class DebugManager : SingletonMonoBehaviour<DebugManager>
+public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
 {
     [SerializeField]
 	private bool isShow = false;
+    [SerializeField]
+    private int targetFrameRate = 60;
 
     private int screenLongSide;
-    private Rect boxRect;
-    private GUIStyle style = new GUIStyle();
-
-    // for fps calculation.
     private int frameCount;
     private float elapsedTime;
     private double frameRate;
+    private Rect boxRect;
+    private GUIStyle style = new GUIStyle();
 
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	protected override void Awake()
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    protected override void Awake()
 	{
 		base.Awake();
+
+        Application.targetFrameRate = targetFrameRate;
 		Init();
 	}
 

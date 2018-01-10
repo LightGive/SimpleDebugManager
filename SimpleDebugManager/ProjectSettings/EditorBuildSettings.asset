@@ -4,4 +4,10 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/LightGive/SimpleDebugManager/Example/Scenes/Example1.unity
+    guid: ffa3174bd72a643b7a3ab8c679ed3d93
+  - enabled: 1
+    path: Assets/LightGive/SimpleDebugManager/Example/Scenes/Example2.unity
+    guid: 86b6f0b044e4546da9d8a99e3c6c77b4
