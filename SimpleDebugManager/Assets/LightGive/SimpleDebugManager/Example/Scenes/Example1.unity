@@ -297,10 +297,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isShow: 1
   showDebugPositon: 0
+  slowFrameRateBreak: 0
   targetFrameRate: 60
   fontSizeFrameRate: 50
-  textLine: 10
+  normalFrameRate: 30
+  slowFrameRate: 10
+  normalFrameRateColor: {r: 1, g: 1, b: 1, a: 1}
+  cautionFrameRateColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  warningFrameRateColor: {r: 1, g: 0, b: 0, a: 1}
+  isShowBackground: 0
+  maxTextLine: 30
+  normalTextColor: {r: 0, g: 0, b: 0, a: 1}
   showDebugKeyCode: 100
+  showTexts:
+  - Hello,World
+  - Hoge
+  - PiyoPiyoPiyo
+  - '.......'
+  - 00000
 --- !u!4 &554940580
 Transform:
   m_ObjectHideFlags: 0

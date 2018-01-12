@@ -26,15 +26,15 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     [SerializeField]
     private ShowDebugPosition showDebugPositon;
     [SerializeField]
-    private bool isWarningFrameRateBreak = false;
+    private bool slowFrameRateBreak = false;
     [SerializeField]
     private int targetFrameRate = 60;
     [SerializeField]
     private int fontSizeFrameRate = 50;
     [SerializeField]
-    private int cautionFrameRate = 30;
+    private int normalFrameRate = 30;
     [SerializeField]
-    private int warningFrameRate = 10;
+    private int slowFrameRate = 10;
     [SerializeField]
     private Color normalFrameRateColor = Color.white;
     [SerializeField]
@@ -42,15 +42,17 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     [SerializeField]
     private Color warningFrameRateColor = Color.red;
 
-    [Header("Other")]
+    [Header("DebugText")]
+    [SerializeField]
+    private bool isShowBackground;
     [SerializeField]
     private int maxTextLine = 10;
+    [SerializeField]
+    private Color normalTextColor = Color.gray;
 
     [Header("Setting")]
     [SerializeField]
     private KeyCode showDebugKeyCode = KeyCode.D;
-
-
 
     [SerializeField]
     private string[] showTexts;
@@ -58,14 +60,17 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     private int frameCount;
     private float elapsedTime;
     private double frameRate;
+    private double minFrameRate;
+    private double maxFrameRate;
+    private int normalFontSize;
 
     private GUIStyle fpsGuiStyle = new GUIStyle();
     private GUIStyle normalTextGuiStyle = new GUIStyle();
 
-
     private float FrameRateBoxWidth     { get { return fontSizeFrameRate * 2.5f; } }
     private float FrameRateBoxHeight    { get { return fontSizeFrameRate * 1.2f; } }
     private float NormalTextFontSize    { get { return Screen.height / maxTextLine; } }
+    private float NormalTextBoxHeight   { get { return normalFontSize * 1.1f;} }
 
     /// <summary>
     /// 初期化
@@ -84,8 +89,9 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
         fpsGuiStyle.fontStyle = FontStyle.Bold;
         fpsGuiStyle.normal.textColor = Color.white;
         frameRate = targetFrameRate;
-
-
+        maxFrameRate = 0;
+        minFrameRate = targetFrameRate;
+        normalTextGuiStyle.alignment = TextAnchor.MiddleLeft;
     }
 
     /// <summary>
@@ -93,14 +99,17 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     /// </summary>
     void Update()
     {
-        // FPS calculation
+        // FPSを計算する
         CalcFramePerSecound();
 
+        //Debugキーを表示するかをチェックする
         CheckDebugKey();
-
 
     }
 
+    /// <summary>
+    /// FPSを計算する
+    /// </summary>
     void CalcFramePerSecound()
     {
         frameCount++;
@@ -112,7 +121,7 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
             if (frameRate < 20)
             {
                 fpsGuiStyle.normal.textColor = Color.red;
-                if (isWarningFrameRateBreak)
+                if (slowFrameRateBreak)
                     Debug.Break();
             }
             else if (frameRate < 40f)
@@ -123,6 +132,13 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
             {
                 fpsGuiStyle.normal.textColor = Color.white;
             }
+
+            if (minFrameRate > frameRate && Time.realtimeSinceStartup > 2f)
+                minFrameRate = frameRate;
+            else if (maxFrameRate < frameRate)
+                maxFrameRate = frameRate;
+                
+
             frameCount = 0;
             elapsedTime = 0;
 
@@ -139,6 +155,19 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
         {
             isShow = !isShow;
         }
+    }
+
+    /// <summary>
+    /// Display
+    /// </summary>
+    private void OnGUI()
+    {
+        if (!isShow)
+            return;
+
+        //FPS表示
+        ShowFramePerSecound();
+        ShowNormalText();
     }
 
     /// <summary>
@@ -171,15 +200,31 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     }
 
     /// <summary>
-    /// Display FPS
+    /// 通常のデバッグのテキストを表示する
     /// </summary>
-    private void OnGUI()
+    void ShowNormalText()
     {
-        if (!isShow)
-            return;
+        normalFontSize = Screen.height / maxTextLine;
+        normalTextGuiStyle.fontSize = normalFontSize;
+        normalTextGuiStyle.normal.textColor = normalTextColor;
 
-        ShowFramePerSecound();
+        for (int i = 0; i < showTexts.Length; i++)
+        {
+            var rect = new Rect(1, NormalTextBoxHeight * i, GetTextBoxWidth(showTexts[i]), normalFontSize);
+            if (isShowBackground)
+                GUI.Box(rect, "");
+            GUI.Label(rect, showTexts[i], normalTextGuiStyle);
+        }
+    }
 
+    /// <summary>
+    /// 文字の幅を取得する
+    /// </summary>
+    /// <returns>The text box width.</returns>
+    /// <param name="_text">Text.</param>
+    float GetTextBoxWidth(string _text)
+    {
+        return normalFontSize*_text.Length * 0.8f;
     }
 }
 
