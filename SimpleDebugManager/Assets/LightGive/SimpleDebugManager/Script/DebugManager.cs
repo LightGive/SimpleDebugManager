@@ -26,13 +26,25 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     [SerializeField]
     private ShowDebugPosition showDebugPositon;
     [SerializeField]
+    private bool isWarningFrameRateBreak = false;
+    [SerializeField]
     private int targetFrameRate = 60;
     [SerializeField]
-    private int fontSizeFrameRate = 10;
+    private int fontSizeFrameRate = 50;
+    [SerializeField]
+    private int cautionFrameRate = 30;
+    [SerializeField]
+    private int warningFrameRate = 10;
+    [SerializeField]
+    private Color normalFrameRateColor = Color.white;
+    [SerializeField]
+    private Color cautionFrameRateColor = Color.yellow;
+    [SerializeField]
+    private Color warningFrameRateColor = Color.red;
 
     [Header("Other")]
     [SerializeField]
-    private int textLine = 10;
+    private int maxTextLine = 10;
 
     [Header("Setting")]
     [SerializeField]
@@ -40,8 +52,9 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
 
 
 
-
+    [SerializeField]
     private string[] showTexts;
+
     private int frameCount;
     private float elapsedTime;
     private double frameRate;
@@ -52,7 +65,7 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
 
     private float FrameRateBoxWidth     { get { return fontSizeFrameRate * 2.5f; } }
     private float FrameRateBoxHeight    { get { return fontSizeFrameRate * 1.2f; } }
-
+    private float NormalTextFontSize    { get { return Screen.height / maxTextLine; } }
 
     /// <summary>
     /// 初期化
@@ -71,6 +84,7 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
         fpsGuiStyle.fontStyle = FontStyle.Bold;
         fpsGuiStyle.normal.textColor = Color.white;
         frameRate = targetFrameRate;
+
 
     }
 
@@ -96,12 +110,19 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
             frameRate = System.Math.Round(frameCount / elapsedTime, 1, System.MidpointRounding.AwayFromZero);
 
             if (frameRate < 20)
+            {
                 fpsGuiStyle.normal.textColor = Color.red;
+                if (isWarningFrameRateBreak)
+                    Debug.Break();
+            }
             else if (frameRate < 40f)
+            {
                 fpsGuiStyle.normal.textColor = Color.yellow;
+            }
             else
+            {
                 fpsGuiStyle.normal.textColor = Color.white;
-
+            }
             frameCount = 0;
             elapsedTime = 0;
 
