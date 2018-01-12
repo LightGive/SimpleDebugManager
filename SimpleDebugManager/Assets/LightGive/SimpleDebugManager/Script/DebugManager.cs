@@ -50,6 +50,8 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     [SerializeField]
     private Color normalTextColor = Color.gray;
 
+
+
     [Header("Setting")]
     [SerializeField]
     private KeyCode showDebugKeyCode = KeyCode.D;
