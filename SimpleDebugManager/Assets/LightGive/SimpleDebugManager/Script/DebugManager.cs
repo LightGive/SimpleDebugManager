@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using LightGive;
 
 #if UNITY_EDITOR
@@ -11,43 +11,84 @@ using UnityEditor;
 /// </summary>
 public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
 {
+    public enum ShowDebugPosition
+    {
+        TopRight,
+        TopLeft,
+        BottomRight,
+        BottomLeft,
+    }
+
     [SerializeField]
-	private bool isShow = false;
+    private bool isShow = false;
+
+    [Header("FPS")]
+    [SerializeField]
+    private ShowDebugPosition showDebugPositon;
     [SerializeField]
     private int targetFrameRate = 60;
+    [SerializeField]
+    private int fontSizeFrameRate = 10;
 
-    private int screenLongSide;
+    [Header("Other")]
+    [SerializeField]
+    private int textLine = 10;
+
+    [Header("Setting")]
+    [SerializeField]
+    private KeyCode showDebugKeyCode = KeyCode.D;
+
+
+
+
+    private string[] showTexts;
     private int frameCount;
     private float elapsedTime;
     private double frameRate;
-    private Rect boxRect;
-    private GUIStyle style = new GUIStyle();
 
+    private GUIStyle fpsGuiStyle = new GUIStyle();
+    private GUIStyle normalTextGuiStyle = new GUIStyle();
+
+
+    private float FrameRateBoxWidth     { get { return fontSizeFrameRate * 2.5f; } }
+    private float FrameRateBoxHeight    { get { return fontSizeFrameRate * 1.2f; } }
 
 
     /// <summary>
     /// 初期化
     /// </summary>
     protected override void Awake()
-	{
-		base.Awake();
-
+    {
+        base.Awake();
         Application.targetFrameRate = targetFrameRate;
-		Init();
-	}
 
-	void Init()
-	{
-        UpdateUISize();
+        Init();
     }
 
+    void Init()
+    {
+        fpsGuiStyle.alignment = TextAnchor.MiddleCenter;
+        fpsGuiStyle.fontStyle = FontStyle.Bold;
+        fpsGuiStyle.normal.textColor = Color.white;
+        frameRate = targetFrameRate;
 
-	/// <summary>
-	/// 更新処理
-	/// </summary>
-	void Update()
-	{
+    }
+
+    /// <summary>
+    /// 更新処理
+    /// </summary>
+    void Update()
+    {
         // FPS calculation
+        CalcFramePerSecound();
+
+        CheckDebugKey();
+
+
+    }
+
+    void CalcFramePerSecound()
+    {
         frameCount++;
         elapsedTime += Time.deltaTime;
         if (elapsedTime > 0.5f)
@@ -55,33 +96,57 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
             frameRate = System.Math.Round(frameCount / elapsedTime, 1, System.MidpointRounding.AwayFromZero);
 
             if (frameRate < 20)
-                style.normal.textColor = Color.red;
+                fpsGuiStyle.normal.textColor = Color.red;
             else if (frameRate < 40f)
-                style.normal.textColor = Color.yellow;
+                fpsGuiStyle.normal.textColor = Color.yellow;
             else
-                style.normal.textColor = Color.white;
+                fpsGuiStyle.normal.textColor = Color.white;
 
             frameCount = 0;
             elapsedTime = 0;
 
-            // Update the UI size if the resolution has changed
-            if (screenLongSide != Mathf.Max(Screen.width, Screen.height))
-            {
-                UpdateUISize();
-            }
         }
     }
 
     /// <summary>
-    /// Resize the UI according to the screen resolution
+    /// デバッグのキーをチェックする
     /// </summary>
-    private void UpdateUISize()
+    void CheckDebugKey()
     {
-        screenLongSide = Mathf.Max(Screen.width, Screen.height);
-        var rectLongSide = screenLongSide / 8;
-        boxRect = new Rect(1, 1, rectLongSide, rectLongSide / 3);
-        style.fontSize = (int)(screenLongSide / 36.8);
-        //style.normal.textColor = Color.white;
+        //表示・非表示を切り替える
+        if (Input.GetKeyDown(showDebugKeyCode))
+        {
+            isShow = !isShow;
+        }
+    }
+
+    /// <summary>
+    /// FPSを表示
+    /// </summary>
+    void ShowFramePerSecound()
+    {
+        fpsGuiStyle.fontSize = fontSizeFrameRate;
+
+        Rect debugFpsRect = Rect.zero;
+        switch (showDebugPositon)
+        {
+            case ShowDebugPosition.TopRight:
+                debugFpsRect = new Rect(Screen.width - FrameRateBoxWidth, 1, FrameRateBoxWidth, FrameRateBoxHeight);
+                break;
+            case ShowDebugPosition.TopLeft:
+                debugFpsRect = new Rect(1, 1, FrameRateBoxWidth, FrameRateBoxHeight);
+                break;
+            case ShowDebugPosition.BottomRight:
+                debugFpsRect = new Rect(Screen.width - FrameRateBoxWidth, Screen.height - FrameRateBoxHeight, FrameRateBoxWidth, FrameRateBoxHeight);
+                break;
+            case ShowDebugPosition.BottomLeft:
+                debugFpsRect = new Rect(1, Screen.height - FrameRateBoxHeight, FrameRateBoxWidth, FrameRateBoxHeight);
+                break;
+            default: break;
+        }
+
+        GUI.Box(debugFpsRect, "");
+        GUI.Label(debugFpsRect, frameRate.ToString("F1"), fpsGuiStyle);
     }
 
     /// <summary>
@@ -92,8 +157,8 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
         if (!isShow)
             return;
 
-        GUI.Box(boxRect, "");
-        GUI.Label(boxRect, "FPS : " + frameRate.ToString("F1") ,style);
+        ShowFramePerSecound();
+
     }
 }
 

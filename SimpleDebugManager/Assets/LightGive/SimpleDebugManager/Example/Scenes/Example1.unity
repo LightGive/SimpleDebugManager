@@ -296,7 +296,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isShow: 1
+  showDebugPositon: 0
   targetFrameRate: 60
+  fontSizeFrameRate: 50
+  textLine: 10
+  showDebugKeyCode: 100
 --- !u!4 &554940580
 Transform:
   m_ObjectHideFlags: 0
