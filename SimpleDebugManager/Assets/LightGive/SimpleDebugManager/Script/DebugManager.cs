@@ -228,6 +228,17 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     {
         return normalFontSize*_text.Length * 0.8f;
     }
+
+    /// <summary>
+    /// デバッグのテキストを追加して表示
+    /// </summary>
+    /// <param name="_text">Text.</param>
+    /// <param name="_line">Line.</param>
+    public void SetDebugText(string _text, int _line = 0)
+    {
+        _line = Mathf.Clamp(_line, 0, showTexts.Length);
+        showTexts[_line] = _text;
+    }
 }
 
 #if UNITY_EDITOR

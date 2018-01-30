@@ -306,7 +306,7 @@ MonoBehaviour:
   cautionFrameRateColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   warningFrameRateColor: {r: 1, g: 0, b: 0, a: 1}
   isShowBackground: 0
-  maxTextLine: 30
+  maxTextLine: 40
   normalTextColor: {r: 0, g: 0, b: 0, a: 1}
   showDebugKeyCode: 100
   showTexts:
