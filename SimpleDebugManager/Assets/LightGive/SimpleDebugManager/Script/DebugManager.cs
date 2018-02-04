@@ -44,39 +44,32 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
 
     [Header("DebugText")]
     [SerializeField]
-    private bool isShowBackground;
+    private bool isShowBackground = false;
     [SerializeField]
-    private int maxTextLine = 10;
+    private int normalFontSize = 50;
     [SerializeField]
     private Color normalTextColor = Color.gray;
-
-
+    [SerializeField]
+    private string[] showTexts;
 
     [Header("Setting")]
     [SerializeField]
     private KeyCode showDebugKeyCode = KeyCode.D;
 
-    [SerializeField]
-    private string[] showTexts;
 
     private int frameCount;
     private float elapsedTime;
     private double frameRate;
     private double minFrameRate;
     private double maxFrameRate;
-    private int normalFontSize;
-
     private GUIStyle fpsGuiStyle = new GUIStyle();
     private GUIStyle normalTextGuiStyle = new GUIStyle();
 
     private float FrameRateBoxWidth     { get { return fontSizeFrameRate * 2.5f; } }
     private float FrameRateBoxHeight    { get { return fontSizeFrameRate * 1.2f; } }
-    private float NormalTextFontSize    { get { return Screen.height / maxTextLine; } }
     private float NormalTextBoxHeight   { get { return normalFontSize * 1.1f;} }
 
-    /// <summary>
-    /// 初期化
-    /// </summary>
+
     protected override void Awake()
     {
         base.Awake();
@@ -206,15 +199,25 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     /// </summary>
     void ShowNormalText()
     {
-        normalFontSize = Screen.height / maxTextLine;
+        var maxLengh = 0;
+        for (int i = 0; i < showTexts.Length; i++)
+        {
+            if (showTexts[i].Length > maxLengh)
+            {
+                maxLengh = i;
+            }
+        }
+
         normalTextGuiStyle.fontSize = normalFontSize;
         normalTextGuiStyle.normal.textColor = normalTextColor;
+
+        var backgroundRect = new Rect(1, 1, GetTextBoxWidth(showTexts[maxLengh]), normalFontSize * showTexts.Length*1.1f);
+        if (isShowBackground)
+            GUI.Box(backgroundRect, "");
 
         for (int i = 0; i < showTexts.Length; i++)
         {
             var rect = new Rect(1, NormalTextBoxHeight * i, GetTextBoxWidth(showTexts[i]), normalFontSize);
-            if (isShowBackground)
-                GUI.Box(rect, "");
             GUI.Label(rect, showTexts[i], normalTextGuiStyle);
         }
     }
@@ -226,7 +229,7 @@ public class DebugManager : LightGive.SingletonMonoBehaviour<DebugManager>
     /// <param name="_text">Text.</param>
     float GetTextBoxWidth(string _text)
     {
-        return normalFontSize*_text.Length * 0.8f;
+        return normalFontSize*_text.Length * 1.0f;
     }
 
     /// <summary>

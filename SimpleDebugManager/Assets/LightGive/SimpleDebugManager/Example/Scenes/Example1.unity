@@ -305,9 +305,9 @@ MonoBehaviour:
   normalFrameRateColor: {r: 1, g: 1, b: 1, a: 1}
   cautionFrameRateColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   warningFrameRateColor: {r: 1, g: 0, b: 0, a: 1}
-  isShowBackground: 0
-  maxTextLine: 40
-  normalTextColor: {r: 0, g: 0, b: 0, a: 1}
+  isShowBackground: 1
+  normalFontSize: 50
+  normalTextColor: {r: 1, g: 1, b: 1, a: 1}
   showDebugKeyCode: 100
   showTexts:
   - Hello,World
@@ -315,6 +315,10 @@ MonoBehaviour:
   - PiyoPiyoPiyo
   - '.......'
   - 00000
+  - 00000
+  - 00000
+  - 00000
+  - "\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042\u3042"
 --- !u!4 &554940580
 Transform:
   m_ObjectHideFlags: 0

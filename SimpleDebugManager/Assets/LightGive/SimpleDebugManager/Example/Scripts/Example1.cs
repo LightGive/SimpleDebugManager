@@ -12,7 +12,7 @@ public class Example1 : MonoBehaviour {
 	
 	void Update ()
     {
-		
+        //DebugManager.Instance.
 	}
 
     public void OnSceneChangeButtonDown()
