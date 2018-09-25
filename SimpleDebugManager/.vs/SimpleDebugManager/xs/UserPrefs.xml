@@ -3,8 +3,8 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/LightGive/Managers/SimpleDebugManager/Script/SimpleDebugManager.cs">
     <Files>
       <File FileName="Assets/LightGive/System/SingletonMonoBehaviour.cs" Line="14" Column="26" />
-      <File FileName="Assets/LightGive/Managers/SimpleDebugManager/Script/_DebugManager.cs" Line="246" Column="23" />
-      <File FileName="Assets/LightGive/Managers/SimpleDebugManager/Script/SimpleDebugManager.cs" Line="18" Column="3" />
+      <File FileName="Assets/LightGive/Managers/SimpleDebugManager/Script/Editor/SimpleDebugManagerEditor.cs" Line="29" Column="3" />
+      <File FileName="Assets/LightGive/Managers/SimpleDebugManager/Script/SimpleDebugManager.cs" Line="3" Column="17" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

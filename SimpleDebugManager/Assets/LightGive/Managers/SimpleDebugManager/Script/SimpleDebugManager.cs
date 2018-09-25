@@ -12,15 +12,19 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	[SerializeField]
 	private ShowDebugPosition m_debugPosition;
 	[SerializeField]
-	private bool m_isShow;
+	private bool m_isShow = true;
 	[SerializeField]
-	private int m_targetFrameRate;
+	private int m_targetFrameRate = -1;
 	[SerializeField]
-	private Color normalFrameRateColor = Color.white;
+	private int m_warningFrameRate = 40;
 	[SerializeField]
-	private Color warningFrameRateColor = Color.yellow;
+	private int m_cautionFrameRate = 20;
 	[SerializeField]
-	private Color cautionFrameRateColor = Color.red;
+	private Color m_normalFrameRateColor = Color.white;
+	[SerializeField]
+	private Color m_warningFrameRateColor = Color.yellow;
+	[SerializeField]
+	private Color m_cautionFrameRateColor = Color.red;
 
 	private int m_frameCount;
 	private float m_prevTime;
@@ -54,6 +58,7 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	{
 		isDontDestroy = true;
 		Application.targetFrameRate = m_targetFrameRate;
+		QualitySettings.vSyncCount = 0;
 		m_frameCount = 0;
 		m_prevTime = 0.0f;
 	}
@@ -89,7 +94,9 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 		m_textFPS.resizeTextMinSize = 5;
 		m_textFPS.rectTransform.sizeDelta = m_imageBackgroundFPS.rectTransform.sizeDelta;
 		m_textFPS.rectTransform.anchoredPosition = Vector2.zero;
-		m_textFPS.text = "120";
+		m_textFPS.text = "";
+
+		backgroundFpsObject.SetActive(m_isShow);
 	}
 
 	void SetPosition()
@@ -121,17 +128,17 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 
 		if (t >= 0.5f)
 		{
-			if (m_frameCount < 20)
+			if (m_frameCount < m_cautionFrameRate)
 			{
-				m_textFPS.color = cautionFrameRateColor;
+				m_textFPS.color = m_cautionFrameRateColor;
 			}
-			else if (m_frameCount < 40f)
+			else if (m_frameCount < m_warningFrameRate)
 			{
-				m_textFPS.color = warningFrameRateColor;
+				m_textFPS.color = m_warningFrameRateColor;
 			}
 			else
 			{
-				m_textFPS.color = normalFrameRateColor;
+				m_textFPS.color = m_normalFrameRateColor;
 			}
 
 			m_textFPS.text = m_frameCount.ToString("F1");
