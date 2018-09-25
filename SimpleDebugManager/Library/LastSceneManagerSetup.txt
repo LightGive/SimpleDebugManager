@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/LightGive/SimpleDebugManager/Example/Scenes/Example1.unity
+- path: Assets/LightGive/Managers/SimpleDebugManager/Example/Scenes/Example1.unity
   isLoaded: 1
   isActive: 1

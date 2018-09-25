@@ -14,7 +14,7 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	[SerializeField]
 	private bool m_isShow = true;
 	[SerializeField]
-	private int m_targetFrameRate = -1;
+	private int m_targetFrameRate = 60;
 	[SerializeField]
 	private int m_warningFrameRate = 40;
 	[SerializeField]
@@ -25,6 +25,10 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	private Color m_warningFrameRateColor = Color.yellow;
 	[SerializeField]
 	private Color m_cautionFrameRateColor = Color.red;
+	[SerializeField]
+	private float m_debugTimeScale = 1.0f;
+	[SerializeField]
+	private bool m_isDebugTimeScale = false;
 
 	private int m_frameCount;
 	private float m_prevTime;
@@ -58,7 +62,6 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	{
 		isDontDestroy = true;
 		Application.targetFrameRate = m_targetFrameRate;
-		QualitySettings.vSyncCount = 0;
 		m_frameCount = 0;
 		m_prevTime = 0.0f;
 	}

@@ -60,3 +60,5 @@ MonoBehaviour:
   m_normalFrameRateColor: {r: 1, g: 1, b: 1, a: 1}
   m_warningFrameRateColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   m_cautionFrameRateColor: {r: 1, g: 0, b: 0, a: 1}
+  m_debugTimeScale: 1
+  m_isDebugTimeScale: 0
