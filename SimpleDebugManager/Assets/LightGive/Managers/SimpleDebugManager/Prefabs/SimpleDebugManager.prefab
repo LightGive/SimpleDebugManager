@@ -52,4 +52,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDontDestroy: 0
-  m_debugPosition: 1
+  m_debugPosition: 0
+  m_isShow: 0
+  m_targetFrameRate: 60
+  normalFrameRateColor: {r: 1, g: 1, b: 1, a: 1}
+  warningFrameRateColor: {r: 1, g: 1, b: 0, a: 1}
+  cautionFrameRateColor: {r: 1, g: 0, b: 0, a: 1}

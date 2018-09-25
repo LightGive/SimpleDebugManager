@@ -14,17 +14,16 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	[SerializeField]
 	private bool m_isShow;
 	[SerializeField]
+	private int m_targetFrameRate;
+	[SerializeField]
 	private Color normalFrameRateColor = Color.white;
 	[SerializeField]
-	private Color cautionFrameRateColor = Color.yellow;
+	private Color warningFrameRateColor = Color.yellow;
 	[SerializeField]
-	private Color warningFrameRateColor = Color.red;
+	private Color cautionFrameRateColor = Color.red;
 
-	private double m_minFrameRate;
-	private double m_maxFrameRate;
-	private double m_frameRate;
-	private float m_elapsedTime;
 	private int m_frameCount;
+	private float m_prevTime;
 	private Canvas m_debugCanvas;
 	private Image m_imageBackgroundFPS;
 	private Text m_textFPS;
@@ -41,16 +40,23 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 
 	protected override void Awake()
 	{
-		isDontDestroy = true;
+		Init();
 		base.Awake();
 		CreateCanvas();
 	}
 
 	private void Update()
 	{
-
+		CalcFramePerSecound();
 	}
 
+	void Init()
+	{
+		isDontDestroy = true;
+		Application.targetFrameRate = m_targetFrameRate;
+		m_frameCount = 0;
+		m_prevTime = 0.0f;
+	}
 
 	void CreateCanvas()
 	{
@@ -64,16 +70,11 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 		backgroundFpsObject.transform.SetParent(canvasObject.transform);
 		m_imageBackgroundFPS = backgroundFpsObject.AddComponent<Image>();
 
-		if (true)//Screen.width > Screen.height)
-		{
-			var wid = Screen.width * WidthPercent;
-			var hei = wid * WidthToHeightPercent;
-			m_imageBackgroundFPS.rectTransform.sizeDelta = new Vector2(wid, hei);
-			m_imageBackgroundFPS.color = new Color(0.0f, 0.0f, 0.0f, BlackAlpha);
-		}
-		else
-		{
-		}
+
+		var wid = Screen.width * WidthPercent;
+		var hei = wid * WidthToHeightPercent;
+		m_imageBackgroundFPS.rectTransform.sizeDelta = new Vector2(wid, hei);
+		m_imageBackgroundFPS.color = new Color(0.0f, 0.0f, 0.0f, BlackAlpha);
 
 		SetPosition();
 
@@ -115,17 +116,16 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	/// </summary>
 	void CalcFramePerSecound()
 	{
-		m_frameCount++;
-		m_elapsedTime += Time.deltaTime;
-		if (m_elapsedTime > 0.5f)
-		{
-			m_frameRate = System.Math.Round(m_frameCount / m_elapsedTime, 1, System.MidpointRounding.AwayFromZero);
+		++m_frameCount;
+		float t = Time.realtimeSinceStartup - m_prevTime;
 
-			if (m_frameRate < 20)
+		if (t >= 0.5f)
+		{
+			if (m_frameCount < 20)
 			{
 				m_textFPS.color = cautionFrameRateColor;
 			}
-			else if (m_frameRate < 40f)
+			else if (m_frameCount < 40f)
 			{
 				m_textFPS.color = warningFrameRateColor;
 			}
@@ -134,13 +134,9 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 				m_textFPS.color = normalFrameRateColor;
 			}
 
-			if (m_minFrameRate > m_frameRate && Time.realtimeSinceStartup > 2f)
-				m_minFrameRate = m_frameRate;
-			else if (m_maxFrameRate < m_frameRate)
-				m_maxFrameRate = m_frameRate;
-
+			m_textFPS.text = m_frameCount.ToString("F1");
+			m_prevTime = Time.realtimeSinceStartup;
 			m_frameCount = 0;
-			m_elapsedTime = 0;
 		}
 	}
 }
