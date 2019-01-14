@@ -10,7 +10,7 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	private const float BlackAlpha = 0.5f;
 
 	[SerializeField]
-	private ShowDebugPosition m_debugPosition;
+	private Text m_textFramePerSecound;
 	[SerializeField]
 	private bool m_isShow = true;
 	[SerializeField]
@@ -25,6 +25,7 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 	private Color m_warningFrameRateColor = Color.yellow;
 	[SerializeField]
 	private Color m_cautionFrameRateColor = Color.red;
+
 	[SerializeField]
 	private float m_debugTimeScale = 1.0f;
 	[SerializeField]
@@ -32,9 +33,7 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 
 	private int m_frameCount;
 	private float m_prevTime;
-	private Canvas m_debugCanvas;
 	private Image m_imageBackgroundFPS;
-	private Text m_textFPS;
 
 	public enum ShowDebugPosition
 	{
@@ -48,9 +47,9 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 
 	protected override void Awake()
 	{
-		Init();
+		isDontDestroy = true;
 		base.Awake();
-		CreateCanvas();
+		Init();
 	}
 
 	private void Update()
@@ -60,65 +59,21 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 
 	void Init()
 	{
-		isDontDestroy = true;
 		Application.targetFrameRate = m_targetFrameRate;
 		m_frameCount = 0;
 		m_prevTime = 0.0f;
 	}
 
-	void CreateCanvas()
-	{
-		var canvasObject = new GameObject("DebugCanvas");
-		canvasObject.transform.SetParent(this.transform);
-		m_debugCanvas = canvasObject.AddComponent<Canvas>();
-		m_debugCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-		m_debugCanvas.sortingOrder = 9999;
+	//private void OnLogMessage(string i_logText, string i_stackTrace, LogType i_type)
+	//{
+	//	if (string.IsNullOrEmpty(i_logText))
+	//	{
+	//		return;
+	//	}
 
-		var backgroundFpsObject = new GameObject("BackgroundFPS");
-		backgroundFpsObject.transform.SetParent(canvasObject.transform);
-		m_imageBackgroundFPS = backgroundFpsObject.AddComponent<Image>();
+	//	m_textUI.text += i_logText;
+	//}
 
-
-		var wid = Screen.width * WidthPercent;
-		var hei = wid * WidthToHeightPercent;
-		m_imageBackgroundFPS.rectTransform.sizeDelta = new Vector2(wid, hei);
-		m_imageBackgroundFPS.color = new Color(0.0f, 0.0f, 0.0f, BlackAlpha);
-
-		SetPosition();
-
-		var textObject = new GameObject("TextFPS");
-		textObject.transform.SetParent(backgroundFpsObject.transform);
-		m_textFPS = textObject.AddComponent<Text>();
-		m_textFPS.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-		m_textFPS.alignment = TextAnchor.MiddleCenter;
-		m_textFPS.fontStyle = FontStyle.Bold;
-		m_textFPS.resizeTextForBestFit = true;
-		m_textFPS.resizeTextMaxSize = 300;
-		m_textFPS.resizeTextMinSize = 5;
-		m_textFPS.rectTransform.sizeDelta = m_imageBackgroundFPS.rectTransform.sizeDelta;
-		m_textFPS.rectTransform.anchoredPosition = Vector2.zero;
-		m_textFPS.text = "";
-
-		backgroundFpsObject.SetActive(m_isShow);
-	}
-
-	void SetPosition()
-	{
-		var left = -(Screen.width / 2.0f) + (m_imageBackgroundFPS.rectTransform.sizeDelta.x / 2.0f);
-		var right = (Screen.width / 2.0f) - (m_imageBackgroundFPS.rectTransform.sizeDelta.x / 2.0f);
-		var bottom = -(Screen.height / 2.0f) + (m_imageBackgroundFPS.rectTransform.sizeDelta.y / 2.0f);
-		var top = (Screen.height / 2.0f) - (m_imageBackgroundFPS.rectTransform.sizeDelta.y / 2.0f);
-
-		switch (m_debugPosition)
-		{
-			case ShowDebugPosition.TopLeft: m_imageBackgroundFPS.rectTransform.anchoredPosition = new Vector2(left, top); break;
-			case ShowDebugPosition.TopRight: m_imageBackgroundFPS.rectTransform.anchoredPosition = new Vector2(right, top); break;
-			case ShowDebugPosition.TopCenter: m_imageBackgroundFPS.rectTransform.anchoredPosition = new Vector2(0.0f, top); break;
-			case ShowDebugPosition.BottomLeft: m_imageBackgroundFPS.rectTransform.anchoredPosition = new Vector2(left, bottom); break;
-			case ShowDebugPosition.BottomRight: m_imageBackgroundFPS.rectTransform.anchoredPosition = new Vector2(right, bottom); break;
-			case ShowDebugPosition.BottomCenter: m_imageBackgroundFPS.rectTransform.anchoredPosition = new Vector2(0.0f, bottom); break;
-		}
-	}
 
 
 	/// <summary>
@@ -133,18 +88,18 @@ public class SimpleDebugManager : LightGive.SingletonMonoBehaviour<SimpleDebugMa
 		{
 			if (m_frameCount < m_cautionFrameRate)
 			{
-				m_textFPS.color = m_cautionFrameRateColor;
+				m_textFramePerSecound.color = m_cautionFrameRateColor;
 			}
 			else if (m_frameCount < m_warningFrameRate)
 			{
-				m_textFPS.color = m_warningFrameRateColor;
+				m_textFramePerSecound.color = m_warningFrameRateColor;
 			}
 			else
 			{
-				m_textFPS.color = m_normalFrameRateColor;
+				m_textFramePerSecound.color = m_normalFrameRateColor;
 			}
 
-			m_textFPS.text = m_frameCount.ToString("F1");
+			m_textFramePerSecound.text = "FPS " + m_frameCount.ToString("00");
 			m_prevTime = Time.realtimeSinceStartup;
 			m_frameCount = 0;
 		}
